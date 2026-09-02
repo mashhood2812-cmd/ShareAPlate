@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Share A Plate</title>
+    <meta
+      name="description"
+      content="Share A Plate — Good food belongs on plates. Not in landfills."
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="top-toolbar">
+      <div class="toolbar-inner" id="toolbarInner"></div>
+    </div>
+
+    <div class="app-shell">
+      <section id="view-1" class="view active">
+        <div class="hero-wrap">
+          <header class="site-header">
+            <div class="brand-wrap">
+              <div class="brand-mark" id="brandMark">S</div>
+              <div class="brand-name" id="brandName">Share A Plate</div>
+            </div>
+            <nav class="nav-links" id="navLinks"></nav>
+          </header>
+
+          <div class="hero">
+            <div class="hero-copy">
+              <span class="eyebrow" id="eyebrow">Better food, fewer landfills</span>
+              <h1 id="heroTitle">Good food belongs on plates. Not in landfills.</h1>
+              <p class="hero-sub" id="heroSubtitle">
+                Share A Plate connects donors and beneficiaries through smart dispatches,
+                eco impact tracking, and rapid food safety checks that reduce waste and nourish communities.
+              </p>
+              <div class="cta-row">
+                <button class="primary-btn" id="joinUsBtn">Join Us -&gt;</button>
+                <span class="subtle-text">Already have an account? <span class="login-link" id="loginLink">Login</span></span>
+              </div>
+            </div>
+
+            <div class="hero-cards">
+              <div class="floating-card">
+                <div style="padding-left: 70px; margin-bottom: 18px;">
+                  <div style="font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--primary); font-weight: 800;">Impact snapshot</div>
+                  <h3 style="margin-top: 10px; font-size: 2.2rem;" id="impactMainValue">28.4k</h3>
+                  <div style="color: var(--muted);" id="impactMainLabel">Meals redirected</div>
+                </div>
+                <div class="stat-grid" id="impactStatsGrid"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section id="view-join" class="view">
+        <div class="container">
+          <div id="regReveal" class="auth-box visible" style="margin-top: 40px;">
+            <div id="joinRoleToggle" class="join-role-toggle" aria-label="Join role switcher">
+              <span class="join-role-slider"></span>
+              <button type="button" class="join-role-option active" data-join-role="beneficiary">Join Us as a Beneficiary</button>
+              <button type="button" class="join-role-option" data-join-role="donor">Join Us as a Donor</button>
+            </div>
+
+            <div class="auth-grid">
+              <form id="beneficiaryForm" class="form-block join-panel active">
+                <h3>Join Us as a Beneficiary</h3>
+                <div class="form-group">
+                  <label for="beneficiaryType" id="beneficiaryTypeLabel">Type of beneficiary</label>
+                  <select id="beneficiaryType" required>
+                    <option value="">Select</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="beneficiaryId" id="beneficiaryIdLabel">Valid ID / Registration Number</label>
+                  <input id="beneficiaryId" type="text" placeholder="Enter ID or registration number" required />
+                </div>
+                <button type="submit" class="submit-btn" id="beneficiarySubmitBtn">Register</button>
+              </form>
+
+              <form id="donorForm" class="form-block join-panel">
+                <h3>Join Us as a Donor</h3>
+                <div class="form-group">
+                  <label for="donorType" id="donorTypeLabel">Type of donor</label>
+                  <select id="donorType" required>
+                    <option value="">Select</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="donorId" id="donorIdLabel">Valid FSSAI / Business ID</label>
+                  <input id="donorId" type="text" placeholder="Enter business ID" required />
+                </div>
+                <button type="submit" class="submit-btn" id="donorSubmitBtn">Register</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-2" class="view">
+        <div class="container">
+          <div id="donorDetailCard" class="section-card">
+            <h2 style="margin-bottom: 22px; font-size: clamp(2rem, 4vw, 3rem);">Donor Registration</h2>
+            <form id="donorDetailForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Organization / Restaurant Name</label>
+                  <input id="orgName" required />
+                </div>
+                <div class="form-group">
+                  <label>Location / Address</label>
+                  <input id="orgAddress" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Operating Hours</label>
+                  <input id="operatingHours" required />
+                </div>
+                <div class="form-group">
+                  <label>User ID</label>
+                  <input id="userId" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Password</label>
+                  <input id="password" type="password" required />
+                </div>
+                <div class="form-group">
+                  <label>Type of Donation</label>
+                  <select id="donationType">
+                    <option>Food</option>
+                    <option>Packaged Goods</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Donation Info / Prep Details</label>
+                <textarea id="donationInfo" placeholder="Describe the food prep details, safety checks, and timing..."></textarea>
+              </div>
+
+              <div class="section-card" style="margin-top: 22px; background: #f9fafb;">
+                <h3 style="margin-bottom: 18px;">Menu Builder</h3>
+                <div id="menuBuilder">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Food Item Name</label>
+                      <input class="menu-name" placeholder="Paneer Masala" />
+                    </div>
+                    <div class="form-group">
+                      <label>Default Qty</label>
+                      <input class="menu-qty" type="number" min="1" value="25" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Production Time</label>
+                      <input class="menu-prod" placeholder="2 hours" />
+                    </div>
+                    <div class="form-group">
+                      <label>Expiry Time</label>
+                      <input class="menu-expiry" placeholder="4 hours" />
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="secondary-btn" id="addMenuRow" style="margin-top: 10px;">+ Add Menu Item</button>
+              </div>
+
+              <button type="submit" class="submit-btn">Register -&gt;</button>
+            </form>
+          </div>
+
+          <div id="inspectionState" class="section-card inspection-box hidden" style="margin-top: 28px;">
+            <h2>You are under Inspection. Please be patient.</h2>
+            <p>Our team is verifying your FSSAI license and safety guidelines.</p>
+            <button class="mini-cta" id="approveInspectionBtn">[ Admin Override: Approve Inspection ]</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-3" class="view">
+        <div class="container">
+          <div class="dashboard-nav">
+            <div class="hamburger" aria-label="Menu">=</div>
+            <div class="user-badges">
+              <div class="credits" id="creditsBadge">Karma Credits: 150.000</div>
+              <div class="avatar" id="profileInitial">R</div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div>
+              <div class="metrics-grid" style="margin-bottom: 20px;">
+                <div class="metric-box">
+                  <small>Pending Requests</small>
+                  <strong id="pendingRequests">0</strong>
+                </div>
+                <div class="metric-box">
+                  <small>Request Status</small>
+                  <div class="status-list" id="statusList">
+                    <div class="status-item"><span>Under Inspection</span><span class="dot inspection"></span></div>
+                    <div class="status-item"><span>Active on Feed</span><span class="dot active"></span></div>
+                    <div class="status-item"><span>Completed</span><span class="dot completed"></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-panel">
+              <button class="action-btn" id="openDispatchBtn">+ Submit a Request / Dispatch Surplus</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-4" class="view">
+        <div class="container">
+          <div class="map-view">
+            <aside class="feed-panel">
+              <h3 style="margin-bottom: 18px;">Live Food Feed</h3>
+              <div class="feed-list" id="feedList"></div>
+            </aside>
+
+            <div class="map-panel">
+              <div id="map" aria-label="Food donation map"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-5" class="view">
+        <div class="container">
+          <div class="hub-grid">
+            <div class="hub-list" id="hubList"></div>
+
+            <aside class="verification-box">
+              <h3>PIN Verification Counter</h3>
+              <div class="form-group">
+                <label>Enter recipient PIN</label>
+                <input id="pinInput" maxlength="4" pattern="[0-9]*" placeholder="####" />
+              </div>
+              <button class="small-btn" id="completePinBtn">Mark as Completed</button>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="loginModal" class="modal" aria-hidden="true">
+      <div class="modal-card">
+        <h3 id="loginTitle">Login</h3>
+        <form id="loginForm">
+          <div class="form-group">
+            <label id="loginUserLabel">User ID</label>
+            <input id="loginUserId" required />
+          </div>
+          <div class="form-group">
+            <label id="loginPasswordLabel">Password</label>
+            <input id="loginPassword" type="password" required />
+          </div>
+          <button type="submit" class="submit-btn" id="loginSubmitBtn">Login -&gt;</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="dispatchModal" class="modal" aria-hidden="true">
+      <div class="modal-card">
+        <h3 id="dispatchTitle">Quick Dispatch</h3>
+        <form id="dispatchForm">
+          <div class="form-group">
+            <label id="dispatchMenuLabel">Menu item</label>
+            <select id="dispatchMenuSelect"></select>
+          </div>
+          <div class="form-group">
+            <label id="dispatchQuantityLabel">Custom surplus quantity</label>
+            <input id="dispatchQty" type="number" min="1" value="20" />
+          </div>
+          <div class="form-group">
+            <label id="dispatchWindowLabel">Pickup / expiry window</label>
+            <input id="dispatchWindow" value="2 hours" />
+          </div>
+          <label class="checkbox-row">
+            <input id="priorityBatch" type="checkbox" />
+            <span id="priorityLabel">Urgent High-Volume Catering Batch (50+ Meals)</span>
+          </label>
+          <button type="submit" class="submit-btn" id="dispatchSubmitBtn">Submit Dispatch</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="index.js"></script>
+  </body>
+</html>
