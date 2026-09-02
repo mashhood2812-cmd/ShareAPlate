@@ -1,0 +1,2 @@
+# ShareAPlate
+Hackathon Project
